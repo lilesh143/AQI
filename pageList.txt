@@ -1,0 +1,23 @@
+1,
+2,
+6,
+7,
+27,
+28,
+10 chapter pages
+10 research ppr pages
+4 certificate
+
+30 color pages 
+36 bw pages
+20 transparent sheet
+160 binding
+
+manish 
+color 210
+br 72
+pages = 282
+
+gawande
+4 * 66 = 264
+ 
