@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { connect } from '../../dbConfig/dbConfig'; // Import your connect function
+import axios from "axios";
 
+import { connect } from "../../dbConfig/dbConfig"; // Import your connect function
 interface AirComponents {
   co: string;
   no: string;
@@ -40,10 +41,10 @@ interface CityNameData {
 
 // Define the type for your city data
 interface CityData {
-  city: string;
-  population: number;
-  trees: number;
-  // Add other fields from your database as needed
+  cityName: string; // Corrected field name
+  humanPopulation: number;
+  treesPopulation: number;
+  year: number;
 }
 
 const AirPollutionIndicator: React.FC = () => {
@@ -195,24 +196,33 @@ const AirPollutionIndicator: React.FC = () => {
   };
 
   // Function to fetch city data from MongoDB
-  const fetchCityData = async (city: string) => {
+  const fetchCityData = async (cityName: string) => {
     try {
-      const response = await fetch(`../api/users/citydata?city=${city}`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data: CityData = await response.json();
-      setCityData(data);
+      console.log(cityName);
+      const response = await axios.get(`/api/users/citydata`, {
+        params: { cityName: {cityName} }, // Pass cityName as a query parameter
+      });
+      console.log(response.data);
+      setCityData(response.data);
     } catch (error) {
-      console.error("Error fetching city data:", error);
-      setError("Error fetching city data.");
+      console.error("Error fetching city data console:", error);
+      setError("Error fetching city data err.");
     }
   };
+
 
   useEffect(() => {
     // Fetch city data when cityName is available
     if (cityName) {
-      console.log(cityName)
+      console.log(cityName);
+      fetchCityData(cityName);
+    }
+  }, [cityName]);
+
+  useEffect(() => {
+    // Fetch city data when cityName is available
+    if (cityName) {
+      console.log(cityName);
       fetchCityData(cityName);
     }
   }, [cityName]);
@@ -363,19 +373,23 @@ const AirPollutionIndicator: React.FC = () => {
           </div>
 
           {/* Display City Data if available */}
+          {/* Display city data if available */}
           {cityData && (
             <div className="bg-gray-100 p-4 rounded-lg mt-4">
               <h2 className="text-xl font-semibold mb-4 text-black">
-                City Data for {cityData.city}:
+                City Data for {cityData.cityName}:
               </h2>
-              <p className="text-black">Human Population: {cityData.population}</p>
-              <p className="text-black">Number of Trees: {cityData.trees}</p>
-              {/* Add more data fields from your database as needed */}
+              <p className="text-black">
+                Human Population: {cityData.humanPopulation}
+              </p>
+              <p className="text-black">
+                Number of Trees: {cityData.treesPopulation}
+              </p>
+              <p className="text-black">Year: {cityData.year}</p>
+              {/* Add more data fields as needed */}
             </div>
           )}
-          {error && (
-            <p className="text-red-500 mt-4">{error}</p>
-          )}
+          {error && <p className="text-red-500 mt-4">{error}</p>}
         </div>
         <footer className="text-center mt-8"></footer>
       </div>

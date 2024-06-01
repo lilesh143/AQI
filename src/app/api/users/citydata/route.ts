@@ -8,20 +8,18 @@ interface CityData {
   year: number;
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+// Define a named export function for the GET method
+export async function GET(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const connection = await connect(); 
+    const connection = await connect();
     const db = connection.db;
-    const collection = db.collection<CityData>("cityData"); // Access the "cities" collection
+    const collection = db.collection<CityData>("cities");
 
-    const cityName = req.query.cityname as string; // Get city name from query parameter
-    const result = await collection.findOne({ cityName }); // Find city by name
+    const cityName = req.query.cityName as string; 
+    const result = await collection.findOne({ cityName });
 
     if (result) {
-      res.status(200).json(result); // Send city data as JSON response
+      res.status(200).json(result); 
     } else {
       res.status(404).json({ message: "City not found" });
     }
